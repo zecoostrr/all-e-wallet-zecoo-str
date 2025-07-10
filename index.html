@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>PAYMENT ZECOO STRR</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --biru-laut: #00bfff;
+      --biru-laut-terang: #33ccff;
+      --background-dark: #000;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background: var(--background-dark);
+      color: #fff;
+      font-family: sans-serif;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    #preloader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--background-dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+    .loader {
+      width: 80px;
+      height: 80px;
+      border: 8px solid rgba(0, 191, 255, 0.1);
+      border-top: 8px solid var(--biru-laut);
+      border-radius: 50%;
+      animation: spin 1s linear infinite, glow 1s ease-in-out infinite alternate;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes glow {
+      from { box-shadow: 0 0 10px var(--biru-laut); }
+      to   { box-shadow: 0 0 30px var(--biru-laut); }
+    }
+    #preloader p {
+      margin-top: 20px;
+      font-size: 20px;
+      font-style: italic;
+      color: var(--biru-laut);
+    }
+    h1 {
+      margin-top: 20px;
+      font-size: 30px;
+      color: #ffffff;
+      text-shadow: 0 0 12px var(--biru-laut);
+    }
+    form {
+      max-width: 320px;
+      width: 90%;
+      margin: 20px auto;
+      text-align: left;
+    }
+    label {
+      display: block;
+      margin: 15px 0 5px;
+      color: #ffffff;
+    }
+    select {
+      width: 100%;
+      padding: 10px;
+      background: #111;
+      color: #ffffff;
+      border: 1px solid var(--biru-laut);
+      border-radius: 6px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+    .info-pembayaran {
+      margin-top: 10px;
+      padding: 10px;
+      background: #111;
+      border: 1px solid var(--biru-laut);
+      border-radius: 6px;
+      color: #ffffff;
+      display: none;
+    }
+    button {
+      background: var(--biru-laut);
+      color: #fff;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      display: block;
+      margin: 20px auto;
+    }
+    button:hover {
+      background: var(--biru-laut-terang);
+      transform: scale(1.05);
+    }
+    #qrisImage {
+      margin: 20px auto;
+      border: 2px solid var(--biru-laut);
+      border-radius: 8px;
+      padding: 5px;
+      background: #111;
+      max-width: 250px;
+    }
+    #qrisImage img {
+      max-width: 100%;
+      border-radius: 6px;
+    }
+    #content, #paymentSection {
+      display: none;
+      text-align: center;
+      max-width: 360px;
+      width: 90%;
+    }
+  </style>
+</head>
+<body>
+
+<div id="preloader">
+  <div class="loader"></div>
+  <p>LOADING...</p>
+</div>
+
+<div id="content">
+  <h1>SELAMAT DATANG DI PAYMENT ZECOO</h1>
+  <button onclick="masukPayment()">Go to Payment</button>
+</div>
+
+<div id="paymentSection">
+  <h1>PAYMENT ZECOO STRR</h1>
+
+  <div id="qrisImage">
+    <img src="https://via.placeholder.com/250x250.png?text=QRIS+Zecoo" alt="QRIS Zecoo">
+  </div>
+
+  <form id="E-WALLET">
+    <label for="metode">E-WALLET:</label>
+    <select id="metode" required onchange="tampilInfo()">
+      <option value="">PILIH METODE</option>
+      <option value="DANA">DANA</option>
+      <option value="GOPAY">GOPAY</option>
+      <option value="OVO">OVO</option>
+    </select>
+
+    <div id="infoPembayaran" class="info-pembayaran"></div>
+
+    <button type="button" id="salinButton" style="display:none;" onclick="salinNomor()">Salin</button>
+  </form>
+</div>
+
+<script>
+  const dataPayment = {
+    "DANA": { nama: "Suyatmi", nomor: "085733610983" },
+    "GOPAY": { nama: "Zecoo Strr Official", nomor: "BELUM ADA BANG" },
+    "OVO": { nama: "Zecoo Merchant", nomor: "BELUM ADA BANG" }
+  };
+
+  let nomorSekarang = "";
+
+  function tampilInfo() {
+    const metode = document.getElementById("metode").value;
+    const infoDiv = document.getElementById("infoPembayaran");
+    const salinButton = document.getElementById("salinButton");
+
+    if (metode && dataPayment[metode]) {
+      const info = dataPayment[metode];
+      infoDiv.innerHTML = `<strong>Atas Nama:</strong> ${info.nama}<br>
+                           <strong>Nomor:</strong> ${info.nomor}`;
+      infoDiv.style.display = "block";
+      salinButton.style.display = "block";
+      nomorSekarang = info.nomor;
+    } else {
+      infoDiv.style.display = "none";
+      salinButton.style.display = "none";
+      nomorSekarang = "";
+    }
+  }
+
+  function salinNomor() {
+    navigator.clipboard.writeText(nomorSekarang).then(() => {
+      alert("Nomor berhasil disalin: " + nomorSekarang);
+    }, () => {
+      alert("Gagal menyalin nomor.");
+    });
+  }
+
+  function masukPayment() {
+    document.getElementById("content").style.display = "none";
+    document.getElementById("paymentSection").style.display = "block";
+  }
+
+  window.addEventListener("load", () => {
+    setTimeout(() => {
+      document.getElementById("preloader").style.display = "none";
+      document.getElementById("content").style.display = "block";
+    }, 1800);
+  });
+</script>
+
+</body>
+</html>
